@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <bean destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
+        <property value="com.mysql.cj.jdbc.Driver" name="driverClassName"/>
+        <property value="jdbc:mysql://169.254.60.58:3306/shop?serverTimezone=GMT%2B8" name="url"/>
+        <property value="root" name="username"/>
+        <property value="1204" name="password"/>
+        <!--maxActive: 最大连接数量-->
+        <property value="50" name="maxActive"/>
+        <!--minIdle: 最小空闲连接-->
+        <property value="5" name="minIdle"/>
+        <!--maxIdle: 最大空闲连接-->
+        <property value="20" name="maxIdle"/>
+        <!--initialSize: 初始化连接-->
+        <property value="30" name="initialSize"/>
+        <!-- 连接被泄露时是否打印：与removeAbandoned，removeAbandonedTimeout一起设置-->
+        <property value="true" name="logAbandoned"/>
+        <!--removeAbandoned: 是否自动回收超时连接-->
+        <property value="true" name="removeAbandoned"/>
+        <!--removeAbandonedTimeout: 当一个连接活动的时间超过多久被认定为是泄露的或不正常的-->
+        <property value="10" name="removeAbandonedTimeout"/>
+        <!--maxWait: 最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。-->
+        <property value="1000" name="maxWait"/>
+        <!-- 在空闲连接回收器线程运行期间休眠的时间值,以毫秒为单位. -->
+        <property value="10000" name="timeBetweenEvictionRunsMillis"/>
+        <!-- 在每次空闲连接回收器线程(如果有)运行时检查的连接数量 -->
+        <property value="10" name="numTestsPerEvictionRun"/>
+        <!-- 1000 * 60 * 30 连接在池中保持空闲而不被空闲连接回收器线程-->
+        <property value="10000" name="minEvictableIdleTimeMillis"/>
+    </bean>
+    <!-- 通过注解,将Service的生命周期纳入Spring的管理 -->
+    <context:annotation-config/>
+    <context:component-scan base-package="com.up.service"/>
+    <!-- 扫描存放SQL语句的xml -->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="typeAliasesPackage" value="com.up.entity"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations">
+            <list>
+                <value>classpath:mapper/*.xml</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 扫描Mapper,放入Spring的管理 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.up.mapper"/>
+    </bean>
+</beans>

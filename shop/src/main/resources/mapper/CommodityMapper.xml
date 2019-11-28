@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.up.mapper.CommodityMapper" >
+    <!--商品添加方法-->
+    <insert id="insertCommodity" parameterType="com.up.entity.CommodityEntity">
+        INSERT INTO TABLE1(version,buycount,category,shopnameid,NAME,PRICE,photo,intro,sum,putaway)VALUES (#{version},#{buycount},#{category},#{shopnameid},#{name},#{price},#{photo},#{intro},#{sum},#{putaway})
+    </insert>
+    <!--商品查询所有-->
+    <select id="queryCommodityList" parameterType="com.up.entity.CommodityEntity" resultType="com.up.entity.CommodityEntity">
+        SELECT  id,name,price,photo,intro,category,sum,buycount,shopnameid,putaway,version FROM TABLE1
+    </select>
+</mapper>
